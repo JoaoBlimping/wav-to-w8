@@ -11,6 +11,29 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#include <sndfile.h>
+
+
+#define BUFFER_LENGTH = 1024;
+
+
+void readWav(char * filename)
+{
+  static short buffer[BUFFER_LENGTH];
+
+	SndfileHandle file ;
+
+	file = SndfileHandle (fname) ;
+
+	printf ("Opened file '%s'\n", fname) ;
+	printf ("    Sample rate : %d\n", file.samplerate ()) ;
+	printf ("    Channels    : %d\n", file.channels ()) ;
+
+	file.read (buffer, BUFFER_LEN) ;
+
+	puts ("") ;
+}
+
 
 int main(int argc,char * * argv)
 {
@@ -19,6 +42,9 @@ int main(int argc,char * * argv)
     printf("you used the wrong number of arguments, fuckhead\n");
     return -1;
   }
+
+  //open the file and shit
+  readWav(argv[1]);
 
   return 0;
 }
