@@ -14,11 +14,22 @@
 #include <sndfile.hh>
 
 
-//converts from some wav format to the daly format
-void convert(short * data)
-{
-  
+#define OUT_SAMPLE_RATE 22050
 
+
+//converts from some wav format to the daly format
+char * convert(short * inData,int size,int sampleRate)
+{
+  int outSize = size / sampleRate * OUT_SAMPLE_RATE;
+  char * outData = new char[outSize];
+
+  for (int i = 0;i < outSize;i++)
+  {
+    int sampleIndex = (int)((float)i / OUT_SAMPLE_RATE * sampleRate);
+    outData[i] = (char)(inData[sampleIndex] >> 8);
+  }
+
+  return outData;
 }
 
 
@@ -33,15 +44,17 @@ void transfer(char * inFilename,char * outFilename)
   short * data = new short[size];
 	wavFile.read(data,size);
 
+  //convert the data to my format
+  char * convertedData = convert(data,size,wavFile.samplerate());
 
+  //delete the old data I guess
+  delete[] data;
 
   //now write it into my new file!!
   FILE * outFile = fopen(outFilename,"w");
   fwrite(&frames,4,1,outFile);
-  fwrite()
-
-
-  return size;
+  fwrite(convertedData,1,size / wavFile.samplerate() * OUT_SAMPLE_RATE,outFile);
+  fclose(outFile);
 }
 
 
@@ -54,7 +67,7 @@ int main(int argc,char * * argv)
   }
 
   //open the file and shit
-  short * data = readWav(argv[1]);
+  transfer(argv[1],argv[2]);
 
   return 0;
 }
