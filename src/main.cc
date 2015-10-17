@@ -4,34 +4,44 @@
 //file extension .w8
 
 //the file is made up of two sections:
-//-3 bytes which contain the number of samples
+//-4 bytes which contain the number of samples
 //-the samples which are all one signed byte
 
 
 #include <stdio.h>
 #include <stdint.h>
 
-#include <sndfile.h>
+#include <sndfile.hh>
 
 
-#define BUFFER_LENGTH = 1024;
-
-
-void readWav(char * filename)
+//converts from some wav format to the daly format
+void convert(short * data)
 {
-  static short buffer[BUFFER_LENGTH];
+  
 
-	SndfileHandle file ;
+}
 
-	file = SndfileHandle (fname) ;
 
-	printf ("Opened file '%s'\n", fname) ;
-	printf ("    Sample rate : %d\n", file.samplerate ()) ;
-	printf ("    Channels    : %d\n", file.channels ()) ;
+//read in all of the input file's data and transfer it to the output file
+void transfer(char * inFilename,char * outFilename)
+{
+  //read in the data
+  SndfileHandle wavFile;
+  wavFile = SndfileHandle(inFilename);
+  int frames = wavFile.frames();
+  int size = wavFile.channels() * (int)wavFile.frames();
+  short * data = new short[size];
+	wavFile.read(data,size);
 
-	file.read (buffer, BUFFER_LEN) ;
 
-	puts ("") ;
+
+  //now write it into my new file!!
+  FILE * outFile = fopen(outFilename,"w");
+  fwrite(&frames,4,1,outFile);
+  fwrite()
+
+
+  return size;
 }
 
 
@@ -44,7 +54,7 @@ int main(int argc,char * * argv)
   }
 
   //open the file and shit
-  readWav(argv[1]);
+  short * data = readWav(argv[1]);
 
   return 0;
 }
